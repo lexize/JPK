@@ -26,18 +26,37 @@ public class JPKAbstractException extends Exception{
     }
 
     public static JPKAbstractException ExceptionFromJsonObject(JsonObject jsonObject, int httpCode) {
-        JPKAbstractException exception;
-        switch (jsonObject.get("code").getAsInt()) {
-            case (20001) -> {
-                exception = new JPKSystemNotFoundException();
+        JPKAbstractException exception = new JPKUnknownException();
+        System.out.println(Json.toJson(jsonObject));
+        var codeElem = jsonObject.get("code");
+        boolean isPKError = codeElem != null;
+        if (!isPKError) {
+            // If non PK error
+            switch (httpCode) {
+                case (400) -> {
+                    exception = new JPKBadRequestException();
+                }
+                case (401) -> {
+                    exception = new JPKAuthException();
+                }
+                case (500) -> {
+                    exception = new JPKInternalServerErrorException();
+                }
             }
-            default -> {
-                exception = new JPKAbstractException();
+        }
+        else {
+            switch (codeElem.getAsInt()) {
+                //If one of PK error
+
+                //System not found
+                case (20001) -> {
+                    exception = new JPKSystemNotFoundException();
+                }
             }
         }
         exception.HttpCode = httpCode;
-        exception.Code = jsonObject.get("code").getAsInt();
-        exception.Message = jsonObject.get("message").getAsString();
+        exception.Code = isPKError ? jsonObject.get("code").getAsInt() : 0;
+        exception.Message = isPKError ? jsonObject.get("message").getAsString() : null;
         if (jsonObject.has("retry_after")) exception.RetryAfter = jsonObject.get("retry_after").getAsInt();
         if (jsonObject.has("errors")) {
             exception.Errors = new HashMap<>();

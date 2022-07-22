@@ -1,2 +1,4 @@
-package org.lexize.jpk.exceptions;public class JPKAuthException {
+package org.lexize.jpk.exceptions;
+
+public class JPKAuthException extends JPKAbstractException{
 }

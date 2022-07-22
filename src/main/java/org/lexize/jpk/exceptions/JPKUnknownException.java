@@ -1,2 +1,4 @@
-package org.lexize.jpk.exceptions;public class JPKUnknownException {
+package org.lexize.jpk.exceptions;
+
+public class JPKUnknownException extends JPKAbstractException{
 }
