@@ -52,6 +52,10 @@ public class JPKAbstractException extends Exception{
                 case (20001) -> {
                     exception = new JPKSystemNotFoundException();
                 }
+
+                case (20009) -> {
+                    exception = new JPKSystemGuildSettingsNotFound();
+                }
             }
         }
         exception.HttpCode = httpCode;
