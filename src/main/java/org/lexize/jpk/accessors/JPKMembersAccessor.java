@@ -7,6 +7,7 @@ import org.lexize.jpk.JPK;
 import org.lexize.jpk.exceptions.JPKAbstractException;
 import org.lexize.jpk.exceptions.JPKSystemNotFoundException;
 import org.lexize.jpk.models.JPKGroupModel;
+import org.lexize.jpk.models.JPKMemberGuildSettingsModel;
 import org.lexize.jpk.models.JPKMemberModel;
 import org.lexize.jpk.models.JPKSystemModel;
 
@@ -262,4 +263,148 @@ public class JPKMembersAccessor {
         }
         return AddMemberToGroups(memberReference, groupIds);
     }
+
+    /**
+     * Removing member from specified groups
+     * @param memberReference Member ID
+     * @param groups List of group IDs
+     * @return True, if success
+     * @throws Exception
+     */
+    public boolean RemoveMemberFromGroups(String memberReference, String... groups) throws Exception {
+        String path = "https://api.pluralkit.me/v2/members/%s/groups/remove".formatted(memberReference);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
+        requestBuilder.POST(HttpRequest.BodyPublishers.ofString(Json.toJson(groups), StandardCharsets.UTF_8));
+        requestBuilder.header("Authorization", Parent.AuthorizationToken);
+        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        int statusCode = response.statusCode();
+        if (statusCode >= 400) {
+            String errorData = response.body();
+            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
+            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
+            throw exception;
+        }
+        return statusCode == 204;
+    }
+
+    /**
+     * Removing member from specified groups
+     * @param memberReference Member ID
+     * @param groups List of groups
+     * @return True, if success
+     * @throws Exception
+     */
+    public boolean RemoveMemberFromGroups(String memberReference, JPKGroupModel... groups) throws Exception {
+        String[] groupIds = new String[groups.length];
+        for (int i = 0; i < groups.length; i++) {
+            groupIds[i] = groups[i].Id;
+        }
+        return RemoveMemberFromGroups(memberReference, groupIds);
+    }
+
+    /**
+     * Overwriting member groups
+     * @param memberReference MemberID
+     * @param groups List of group IDs
+     * @return True, if successful
+     * @throws Exception
+     */
+    public boolean OverwriteMemberGroups(String memberReference, String... groups) throws Exception {
+        String path = "https://api.pluralkit.me/v2/members/%s/groups/overwrite".formatted(memberReference);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
+        requestBuilder.POST(HttpRequest.BodyPublishers.ofString(Json.toJson(groups), StandardCharsets.UTF_8));
+        requestBuilder.header("Authorization", Parent.AuthorizationToken);
+        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        int statusCode = response.statusCode();
+        if (statusCode >= 400) {
+            String errorData = response.body();
+            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
+            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
+            throw exception;
+        }
+        return statusCode == 204;
+    }
+
+    /**
+     * Overwriting member groups
+     * @param memberReference MemberID
+     * @param groups List of groups
+     * @return True, if successful
+     * @throws Exception
+     */
+    public boolean OverwriteMemberGroups(String memberReference, JPKGroupModel... groups) throws Exception {
+        String[] groupIds = new String[groups.length];
+        for (int i = 0; i < groups.length; i++) {
+            groupIds[i] = groups[i].Id;
+        }
+        return OverwriteMemberGroups(memberReference, groupIds);
+    }
+
+    /**
+     * Retrieves member settings in specified guild
+     * @param memberReference Member ID
+     * @param guildReference Guild ID
+     * @return Member Settings
+     * @throws Exception
+     */
+    public JPKMemberGuildSettingsModel GetMemberGuildSettings(String memberReference, String guildReference) throws Exception {
+        String path = "https://api.pluralkit.me/v2/members/%s/guilds/%s".formatted(memberReference, guildReference);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
+        requestBuilder.GET();
+        requestBuilder.header("Authorization", Parent.AuthorizationToken);
+        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        int statusCode = response.statusCode();
+
+        //Throwing exception if code is more or equals 400
+        if (statusCode < 400) {
+            String newModelData = response.body();
+            return Json.fromJson(newModelData, JPKMemberGuildSettingsModel.class);
+        }
+        else {
+            String errorData = response.body();
+            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
+            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
+            throw exception;
+        }
+    }
+
+    /**
+     * Updates member settings in specified guild
+     * @param memberReference Member ID
+     * @param guildReference Guild ID
+     * @param model New model data
+     * @return Updated model data
+     * @throws Exception
+     */
+    public JPKMemberGuildSettingsModel UpdateMemberGuildSettings(String memberReference, String guildReference, JPKMemberGuildSettingsModel model) throws Exception {
+        //Converting model to JSON
+        String modelData = Json.toJson(model);
+
+        String path = "https://api.pluralkit.me/v2/members/%s/guilds/%s".formatted(memberReference, guildReference);
+
+        //Building request
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
+        requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(modelData, StandardCharsets.UTF_8));
+        requestBuilder.header("Authorization", Parent.AuthorizationToken);
+        requestBuilder.header("Content-Type", "application/json");
+        var response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        int statusCode = response.statusCode();
+
+        //Throwing exception if code is more or equals 400
+        if (statusCode < 400) {
+            String newModelData = response.body();
+            return Json.fromJson(newModelData, JPKMemberGuildSettingsModel.class);
+        }
+        else {
+            String errorData = response.body();
+            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
+            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
+            throw exception;
+        }
+    }
+
 }
