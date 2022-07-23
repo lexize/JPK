@@ -2,6 +2,7 @@ package org.lexize.jpk;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.lexize.jpk.accessors.JPKMembersAccessor;
 import org.lexize.jpk.accessors.JPKSystemsAccessor;
 import org.lexize.jpk.exceptions.JPKAbstractException;
 import org.lexize.jpk.models.JPKSwitchModel;
@@ -15,6 +16,7 @@ public class JPK {
     private HttpClient Client;
     private Gson Json;
     private JPKSystemsAccessor SystemsAccessor;
+    private JPKMembersAccessor MembersAccessor;
 
     /**
      * Retrieves HTTP client, used by JPK
@@ -41,6 +43,14 @@ public class JPK {
     }
 
     /**
+     * Retrieves accessor for members models
+     * @return Members Accessor
+     */
+    public JPKMembersAccessor getMembersAccessor() {
+        return MembersAccessor;
+    }
+
+    /**
      * Constructor of JPK
      * @param token
      */
@@ -52,5 +62,6 @@ public class JPK {
                 .registerTypeAdapter(JPKSwitchModel.class, new JPKSwitchDeserializer()).create();
         JPKAbstractException.SetJsonInstance(Json);
         SystemsAccessor = new JPKSystemsAccessor(this);
+        MembersAccessor = new JPKMembersAccessor(this);
     }
 }

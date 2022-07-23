@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import org.lexize.jpk.JPK;
 import org.lexize.jpk.exceptions.JPKAbstractException;
 import org.lexize.jpk.exceptions.JPKSystemNotFoundException;
+import org.lexize.jpk.models.JPKGroupModel;
 import org.lexize.jpk.models.JPKMemberModel;
 import org.lexize.jpk.models.JPKSystemModel;
 
@@ -54,7 +55,6 @@ public class JPKMembersAccessor {
 
         //Checking, is error occurred
         if (statusCode < 400) {
-            //If no, just returning system model
             String modelData = response.body();
             Type listType = new TypeToken<List<JPKMemberModel>>(){}.getType();
             return Json.fromJson(modelData, listType);
@@ -75,6 +75,37 @@ public class JPKMembersAccessor {
      */
     public List<JPKMemberModel> GetSystemMembers() throws Exception {
         return GetSystemMembers("@me");
+    }
+
+    /**
+     * Retrieves member by specified ID
+     * @param memberReference Member ID
+     * @return Member Model
+     * @throws Exception
+     */
+    public JPKMemberModel GetMember(String memberReference) throws Exception {
+        //Creating base request
+        HttpRequest.Builder requestBuilder = HttpRequest
+                .newBuilder()
+                .GET()
+                .header("Authorization", Parent.AuthorizationToken);
+        String path = "https://api.pluralkit.me/v2/members/%s".formatted(memberReference);
+        requestBuilder.uri(URI.create(path));
+
+        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        int statusCode = response.statusCode();
+
+        if (statusCode < 400) {
+            String modelData = response.body();
+            return Json.fromJson(modelData, JPKMemberModel.class);
+        }
+        else {
+            String errorData = response.body();
+            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
+            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
+            throw exception;
+        }
     }
 
     /**
@@ -143,7 +174,7 @@ public class JPKMembersAccessor {
     /**
      * Removes member
      * @param memberReference
-     * @return
+     * @return True, if success
      * @throws Exception
      */
     public boolean DeleteMember(String memberReference) throws Exception {
@@ -161,5 +192,74 @@ public class JPKMembersAccessor {
             throw exception;
         }
         return statusCode == 204;
+    }
+
+    /**
+     * Retrieves array with groups of member with specified ID
+     * @param memberReference Member ID
+     * @return Array of Group Models
+     */
+    public JPKGroupModel[] GetMemberGroups(String memberReference) throws Exception {
+        //Creating base request
+        HttpRequest.Builder requestBuilder = HttpRequest
+                .newBuilder()
+                .GET()
+                .header("Authorization", Parent.AuthorizationToken);
+        String path = "https://api.pluralkit.me/v2/members/%s/groups".formatted(memberReference);
+        requestBuilder.uri(URI.create(path));
+
+        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        int statusCode = response.statusCode();
+
+        if (statusCode < 400) {
+            String modelData = response.body();
+            return Json.fromJson(modelData, JPKGroupModel[].class);
+        }
+        else {
+            String errorData = response.body();
+            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
+            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
+            throw exception;
+        }
+    }
+
+    /**
+     * Adding member to specified groups
+     * @param memberReference Member ID
+     * @param groups List of group references
+     * @return True, if success
+     * @throws Exception
+     */
+    public boolean AddMemberToGroups(String memberReference, String... groups) throws Exception {
+        String path = "https://api.pluralkit.me/v2/members/%s/groups/add".formatted(memberReference);
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
+        requestBuilder.POST(HttpRequest.BodyPublishers.ofString(Json.toJson(groups), StandardCharsets.UTF_8));
+        requestBuilder.header("Authorization", Parent.AuthorizationToken);
+        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        int statusCode = response.statusCode();
+        if (statusCode >= 400) {
+            String errorData = response.body();
+            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
+            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
+            throw exception;
+        }
+        return statusCode == 204;
+    }
+
+    /**
+     * Adding member to specified groups
+     * @param memberReference Member ID
+     * @param groups List of groups
+     * @return True, if success
+     * @throws Exception
+     */
+    public boolean AddMemberToGroups(String memberReference, JPKGroupModel... groups) throws Exception {
+        String[] groupIds = new String[groups.length];
+        for (int i = 0; i < groups.length; i++) {
+            groupIds[i] = groups[i].Id;
+        }
+        return AddMemberToGroups(memberReference, groupIds);
     }
 }
