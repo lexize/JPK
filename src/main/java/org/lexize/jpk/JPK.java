@@ -16,18 +16,34 @@ public class JPK {
     private Gson Json;
     private JPKSystemsAccessor SystemsAccessor;
 
+    /**
+     * Retrieves HTTP client, used by JPK
+     * @return HTTP client
+     */
     public HttpClient getClient() {
         return Client;
     }
 
+    /**
+     * Retrieves JSON serializer for that JPK instance
+     * @return JSON serializer
+     */
     public Gson getJson() {
         return Json;
     }
 
+    /**
+     * Retrieves accessor for systems models
+     * @return Systems Accessor
+     */
     public JPKSystemsAccessor getSystemsAccessor() {
         return SystemsAccessor;
     }
 
+    /**
+     * Constructor of JPK
+     * @param token
+     */
     public JPK(String token) {
         AuthorizationToken = token;
         Client = HttpClient.newBuilder().build();

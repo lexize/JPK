@@ -5,10 +5,7 @@ import com.google.gson.JsonObject;
 import org.lexize.jpk.JPK;
 import org.lexize.jpk.exceptions.JPKAbstractException;
 import org.lexize.jpk.exceptions.JPKSystemNotFoundException;
-import org.lexize.jpk.models.JPKErrorModel;
-import org.lexize.jpk.models.JPKSystemGuildSettingsModel;
-import org.lexize.jpk.models.JPKSystemModel;
-import org.lexize.jpk.models.JPKSystemSettingsModel;
+import org.lexize.jpk.models.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,6 +20,11 @@ public class JPKSystemsAccessor {
     private JPK Parent;
     private HttpClient Client;
     private Gson Json;
+
+    /**
+     * Default constructor of accessor
+     * @param parent
+     */
     public JPKSystemsAccessor(JPK parent) {
         Parent = parent;
         Client = Parent.getClient();
@@ -303,5 +305,103 @@ public class JPKSystemsAccessor {
      */
     public JPKSystemGuildSettingsModel UpdateSystemGuildSettings(String guildId, JPKSystemGuildSettingsModel model) throws Exception {
         return UpdateSystemGuildSettings("@me", guildId, model);
+    }
+
+    /**
+     * Retrieves system autoproxy settings
+     * @param systemReference ID of system
+     * @param guild_id ID of guild
+     * @return Autoproxy settings model
+     * @throws JPKAbstractException
+     * @throws JPKSystemNotFoundException
+     */
+    public JPKAutoproxySettingsModel GetSystemAutoproxySettings(String systemReference, String guild_id) throws Exception {
+        //Creating base request
+        HttpRequest.Builder request = HttpRequest
+                .newBuilder()
+                .GET()
+                .header("Authorization", Parent.AuthorizationToken);
+        String path = "https://api.pluralkit.me/v2/systems/%s/autoproxy?guild_id=%s".formatted(systemReference, guild_id);
+        URI requestURI = URI.create(path);
+        request.uri(requestURI);
+
+        //Sending request and getting response
+        var response = Client.send(request.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        int statusCode = response.statusCode();
+
+        //Checking, is error occurred
+        if (statusCode < 400) {
+            //If no, just returning system guild settings model
+            String modelData = response.body();
+            return Json.fromJson(modelData, JPKAutoproxySettingsModel.class);
+        }
+        else {
+            //If yes, just put json object of error in function and magic happens
+            String errorData = response.body();
+            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
+            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
+            throw exception;
+        }
+    }
+
+    /**
+     * Retrieves current system autoproxy settings
+     * @param guild_id ID of guild
+     * @return Autoproxy settings model
+     * @throws JPKAbstractException
+     * @throws JPKSystemNotFoundException
+     */
+    public JPKAutoproxySettingsModel GetSystemAutoproxySettings(String guild_id) throws Exception {
+        return GetSystemAutoproxySettings("@me", guild_id);
+    }
+
+    /**
+     * Updates system autoproxy settings
+     * @param systemReference ID of system
+     * @param guild_id ID of guild
+     * @param model New autoproxy settings
+     * @return Updated autoproxy settings
+     * @throws JPKAbstractException
+     * @throws JPKSystemNotFoundException
+     */
+    public JPKAutoproxySettingsModel UpdateSystemAutoproxySettings(String systemReference, String guild_id, JPKAutoproxySettingsModel model) throws Exception {
+        //Converting model to JSON
+        String modelData = Json.toJson(model);
+
+        String path = "https://api.pluralkit.me/v2/systems/%s/autoproxy?guild_id=%s".formatted(systemReference, guild_id);
+
+        //Building request
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
+        requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(modelData, StandardCharsets.UTF_8));
+        requestBuilder.header("Authorization", Parent.AuthorizationToken);
+        requestBuilder.header("Content-Type", "application/json");
+        var response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        int statusCode = response.statusCode();
+
+        //Throwing exception if code is more or equals 400
+        if (statusCode < 400) {
+            String newModelData = response.body();
+            return Json.fromJson(newModelData, JPKAutoproxySettingsModel.class);
+        }
+        else {
+            String errorData = response.body();
+            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
+            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
+            throw exception;
+        }
+    }
+
+    /**
+     * Updates current system autoproxy settings
+     * @param guild_id ID of guild
+     * @param model New autoproxy settings
+     * @return Updated autoproxy settings
+     * @throws JPKAbstractException
+     * @throws JPKSystemNotFoundException
+     */
+    public JPKAutoproxySettingsModel UpdateSystemAutoproxySettings(String guild_id, JPKAutoproxySettingsModel model) throws Exception {
+        return UpdateSystemAutoproxySettings("@me", guild_id, model);
     }
 }

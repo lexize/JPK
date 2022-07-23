@@ -5,7 +5,7 @@ import org.lexize.jpk.enums.JPKAutoproxyModeEnum;
 
 public class JPKAutoproxySettingsModel {
     @SerializedName("autoproxy_mode")
-    public JPKAutoproxyModeEnum AutoproxyMode;
+    public String AutoproxyMode;
     @SerializedName("autoproxy_member")
     public String AutoproxyMember;
     @SerializedName("last_latch_timestamp")
