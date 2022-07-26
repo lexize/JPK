@@ -17,6 +17,8 @@ public class JPKGroupModel {
     public String Banner;
     @SerializedName("color")
     public String Color;
+    @SerializedName("members")
+    public String[] MemberdUUIDs;
     @SerializedName("privacy")
     public PrivacyModel Privacy;
 

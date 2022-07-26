@@ -40,7 +40,7 @@ public class JPKMembersAccessor {
      * @return List of JPKMemberModel
      * @throws JPKSystemNotFoundException
      */
-    public List<JPKMemberModel> GetSystemMembers(String systemReference) throws Exception {
+    public JPKMemberModel[] GetSystemMembers(String systemReference) throws Exception {
         //Creating base request
         HttpRequest.Builder request = HttpRequest
                 .newBuilder()
@@ -57,8 +57,7 @@ public class JPKMembersAccessor {
         //Checking, is error occurred
         if (statusCode < 400) {
             String modelData = response.body();
-            Type listType = new TypeToken<List<JPKMemberModel>>(){}.getType();
-            return Json.fromJson(modelData, listType);
+            return Json.fromJson(modelData, JPKMemberModel[].class);
         }
         else {
             //If yes, just put json object of error in function and magic happens
@@ -74,7 +73,7 @@ public class JPKMembersAccessor {
      * @return List of JPKMemberModel
      * @throws JPKSystemNotFoundException
      */
-    public List<JPKMemberModel> GetSystemMembers() throws Exception {
+    public JPKMemberModel[] GetSystemMembers() throws Exception {
         return GetSystemMembers("@me");
     }
 
