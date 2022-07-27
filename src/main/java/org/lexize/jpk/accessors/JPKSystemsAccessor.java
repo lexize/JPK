@@ -16,19 +16,15 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
-public class JPKSystemsAccessor {
-    private JPK Parent;
-    private HttpClient Client;
-    private Gson Json;
+public class JPKSystemsAccessor extends JPKAbstractAccessor {
+
 
     /**
      * Default constructor of accessor
      * @param parent
      */
     public JPKSystemsAccessor(JPK parent) {
-        Parent = parent;
-        Client = Parent.getClient();
-        Json = Parent.getJson();
+        super(parent);
     }
 
     /**
@@ -38,16 +34,10 @@ public class JPKSystemsAccessor {
      * @throws org.lexize.jpk.exceptions.JPKSystemNotFoundException
      */
     public JPKSystemModel GetSystem(String systemReference) throws Exception {
-        //Creating base request
-        HttpRequest.Builder request = HttpRequest
-                .newBuilder()
-                .GET()
-                .header("Authorization", Parent.AuthorizationToken);
         String path = "https://api.pluralkit.me/v2/systems/%s".formatted(systemReference);
-        request.uri(URI.create(path));
 
         //Sending request and getting response
-        var response = Client.send(request.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
         int statusCode = response.statusCode();
 
@@ -89,12 +79,7 @@ public class JPKSystemsAccessor {
 
         String path = "https://api.pluralkit.me/v2/systems/%s".formatted(systemReference);
 
-        //Building request
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(modelData, StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        requestBuilder.header("Content-Type", "application/json");
-        var response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
         int statusCode = response.statusCode();
 
@@ -116,7 +101,7 @@ public class JPKSystemsAccessor {
      * Updates current system for this auth token
      * @param model Model with new data
      * @return edited model
-     * @throws org.lexize.jpk.exceptions.JPKSystemNotFoundException
+     * @throws JPKSystemNotFoundException
      */
     public JPKSystemModel UpdateSystem(JPKSystemModel model) throws Exception {
         return UpdateSystem("@me", model);
@@ -129,16 +114,10 @@ public class JPKSystemsAccessor {
      * @throws org.lexize.jpk.exceptions.JPKSystemNotFoundException
      */
     public JPKSystemSettingsModel GetSystemSettings(String systemReference) throws Exception {
-        //Creating base request
-        HttpRequest.Builder request = HttpRequest
-                .newBuilder()
-                .GET()
-                .header("Authorization", Parent.AuthorizationToken);
         String path = "https://api.pluralkit.me/v2/systems/%s/settings".formatted(systemReference);
-        request.uri(URI.create(path));
 
         //Sending request and getting response
-        var response = Client.send(request.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
         int statusCode = response.statusCode();
 
@@ -160,7 +139,7 @@ public class JPKSystemsAccessor {
     /**
      * Accessor for GET /systems/@me/settings
      * @return model
-     * @throws org.lexize.jpk.exceptions.JPKSystemNotFoundException
+     * @throws JPKSystemNotFoundException
      */
     public JPKSystemSettingsModel GetSystemSettings() throws Exception {
         return GetSystemSettings("@me");
@@ -177,13 +156,7 @@ public class JPKSystemsAccessor {
         String modelData = Json.toJson(model);
 
         String path = "https://api.pluralkit.me/v2/systems/%s".formatted(systemReference);
-
-        //Building request
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(modelData, StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        requestBuilder.header("Content-Type", "application/json");
-        var response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
         int statusCode = response.statusCode();
 
@@ -204,7 +177,7 @@ public class JPKSystemsAccessor {
      * Updates settings of current system
      * @param model Model with new data
      * @return edited model
-     * @throws org.lexize.jpk.exceptions.JPKSystemNotFoundException
+     * @throws JPKSystemNotFoundException
      */
     public JPKSystemSettingsModel UpdateSystemSettings(JPKSystemSettingsModel model) throws Exception {
         return UpdateSystemSettings("@me", model);
@@ -219,16 +192,10 @@ public class JPKSystemsAccessor {
      * @throws org.lexize.jpk.exceptions.JPKSystemGuildSettingsNotFound
      */
     public JPKSystemGuildSettingsModel GetSystemGuildSettings(String systemReference, String guildId) throws Exception {
-        //Creating base request
-        HttpRequest.Builder request = HttpRequest
-                .newBuilder()
-                .GET()
-                .header("Authorization", Parent.AuthorizationToken);
         String path = "https://api.pluralkit.me/v2/systems/%s/guilds/%s".formatted(systemReference, guildId);
-        request.uri(URI.create(path));
 
         //Sending request and getting response
-        var response = Client.send(request.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
         int statusCode = response.statusCode();
 
@@ -272,13 +239,7 @@ public class JPKSystemsAccessor {
         String modelData = Json.toJson(model);
 
         String path = "https://api.pluralkit.me/v2/systems/%s/guilds/%s".formatted(systemReference, guildId);
-
-        //Building request
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(modelData, StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        requestBuilder.header("Content-Type", "application/json");
-        var response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
         int statusCode = response.statusCode();
 
@@ -316,17 +277,10 @@ public class JPKSystemsAccessor {
      * @throws JPKSystemNotFoundException
      */
     public JPKAutoproxySettingsModel GetSystemAutoproxySettings(String systemReference, String guild_id) throws Exception {
-        //Creating base request
-        HttpRequest.Builder request = HttpRequest
-                .newBuilder()
-                .GET()
-                .header("Authorization", Parent.AuthorizationToken);
         String path = "https://api.pluralkit.me/v2/systems/%s/autoproxy?guild_id=%s".formatted(systemReference, guild_id);
-        URI requestURI = URI.create(path);
-        request.uri(requestURI);
 
         //Sending request and getting response
-        var response = Client.send(request.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
         int statusCode = response.statusCode();
 
@@ -370,13 +324,7 @@ public class JPKSystemsAccessor {
         String modelData = Json.toJson(model);
 
         String path = "https://api.pluralkit.me/v2/systems/%s/autoproxy?guild_id=%s".formatted(systemReference, guild_id);
-
-        //Building request
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(modelData, StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        requestBuilder.header("Content-Type", "application/json");
-        var response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
         int statusCode = response.statusCode();
 

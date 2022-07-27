@@ -19,19 +19,16 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class JPKMembersAccessor {
-    private JPK Parent;
-    private HttpClient Client;
-    private Gson Json;
+public class JPKMembersAccessor extends JPKAbstractAccessor {
+
 
     /**
      * Default constructor of accessor
+     *
      * @param parent
      */
     public JPKMembersAccessor(JPK parent) {
-        Parent = parent;
-        Client = Parent.getClient();
-        Json = Parent.getJson();
+        super(parent);
     }
 
     /**
@@ -41,16 +38,10 @@ public class JPKMembersAccessor {
      * @throws JPKSystemNotFoundException
      */
     public JPKMemberModel[] GetSystemMembers(String systemReference) throws Exception {
-        //Creating base request
-        HttpRequest.Builder request = HttpRequest
-                .newBuilder()
-                .GET()
-                .header("Authorization", Parent.AuthorizationToken);
         String path = "https://api.pluralkit.me/v2/systems/%s".formatted(systemReference);
-        request.uri(URI.create(path));
 
         //Sending request and getting response
-        var response = Client.send(request.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
         int statusCode = response.statusCode();
 
@@ -84,15 +75,9 @@ public class JPKMembersAccessor {
      * @throws Exception
      */
     public JPKMemberModel GetMember(String memberReference) throws Exception {
-        //Creating base request
-        HttpRequest.Builder requestBuilder = HttpRequest
-                .newBuilder()
-                .GET()
-                .header("Authorization", Parent.AuthorizationToken);
         String path = "https://api.pluralkit.me/v2/members/%s".formatted(memberReference);
-        requestBuilder.uri(URI.create(path));
 
-        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
         int statusCode = response.statusCode();
 
@@ -115,10 +100,9 @@ public class JPKMembersAccessor {
      * @throws Exception
      */
     public JPKMemberModel CreateMember(JPKMemberModel model) throws Exception {
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
-        requestBuilder.POST(HttpRequest.BodyPublishers.ofString(Json.toJson(model), StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        String modelData_ = Json.toJson(model);
+        String path = "https://api.pluralkit.me/v2/members/";
+        HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData_, Client);
 
         int statusCode = response.statusCode();
 
@@ -149,12 +133,7 @@ public class JPKMembersAccessor {
 
         String path = "https://api.pluralkit.me/v2/members/%s".formatted(memberReference);
 
-        //Building request
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(modelData, StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        requestBuilder.header("Content-Type", "application/json");
-        var response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
         int statusCode = response.statusCode();
 
@@ -179,10 +158,7 @@ public class JPKMembersAccessor {
      */
     public boolean DeleteMember(String memberReference) throws Exception {
         String path = "https://api.pluralkit.me/v2/members/%s".formatted(memberReference);
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.DELETE();
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> response = JPK.Utils.DELETE(path, Parent.AuthorizationToken, Client);
         int statusCode = response.statusCode();
         if (statusCode >= 400) {
             //If yes, just put json object of error in function and magic happens
@@ -208,7 +184,7 @@ public class JPKMembersAccessor {
         String path = "https://api.pluralkit.me/v2/members/%s/groups".formatted(memberReference);
         requestBuilder.uri(URI.create(path));
 
-        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
         int statusCode = response.statusCode();
 
@@ -233,10 +209,8 @@ public class JPKMembersAccessor {
      */
     public boolean AddMemberToGroups(String memberReference, String... groups) throws Exception {
         String path = "https://api.pluralkit.me/v2/members/%s/groups/add".formatted(memberReference);
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.POST(HttpRequest.BodyPublishers.ofString(Json.toJson(groups), StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        String modelData = Json.toJson(groups);
+        HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData, Client);
 
         int statusCode = response.statusCode();
         if (statusCode >= 400) {
@@ -272,10 +246,8 @@ public class JPKMembersAccessor {
      */
     public boolean RemoveMemberFromGroups(String memberReference, String... groups) throws Exception {
         String path = "https://api.pluralkit.me/v2/members/%s/groups/remove".formatted(memberReference);
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.POST(HttpRequest.BodyPublishers.ofString(Json.toJson(groups), StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        String modelData = Json.toJson(groups);
+        HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData, Client);
 
         int statusCode = response.statusCode();
         if (statusCode >= 400) {
@@ -311,11 +283,8 @@ public class JPKMembersAccessor {
      */
     public boolean OverwriteMemberGroups(String memberReference, String... groups) throws Exception {
         String path = "https://api.pluralkit.me/v2/members/%s/groups/overwrite".formatted(memberReference);
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.POST(HttpRequest.BodyPublishers.ofString(Json.toJson(groups), StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-
+        String modelData = Json.toJson(groups);
+        HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData, Client);
         int statusCode = response.statusCode();
         if (statusCode >= 400) {
             String errorData = response.body();
@@ -350,10 +319,7 @@ public class JPKMembersAccessor {
      */
     public JPKMemberGuildSettingsModel GetMemberGuildSettings(String memberReference, String guildReference) throws Exception {
         String path = "https://api.pluralkit.me/v2/members/%s/guilds/%s".formatted(memberReference, guildReference);
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.GET();
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        HttpResponse<String> response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        HttpResponse<String> response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
         int statusCode = response.statusCode();
 
@@ -383,13 +349,7 @@ public class JPKMembersAccessor {
         String modelData = Json.toJson(model);
 
         String path = "https://api.pluralkit.me/v2/members/%s/guilds/%s".formatted(memberReference, guildReference);
-
-        //Building request
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(path));
-        requestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(modelData, StandardCharsets.UTF_8));
-        requestBuilder.header("Authorization", Parent.AuthorizationToken);
-        requestBuilder.header("Content-Type", "application/json");
-        var response = Client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
         int statusCode = response.statusCode();
 
