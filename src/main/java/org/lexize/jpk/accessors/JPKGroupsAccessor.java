@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.lexize.jpk.JPK;
 import org.lexize.jpk.exceptions.JPKAbstractException;
+import org.lexize.jpk.models.JPKAutoproxySettingsModel;
 import org.lexize.jpk.models.JPKGroupModel;
 import org.lexize.jpk.models.JPKMemberModel;
 
@@ -39,18 +40,7 @@ public class JPKGroupsAccessor extends JPKAbstractAccessor {
 
         HttpResponse<String> response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
-        int statusCode = response.statusCode();
-
-        if (statusCode < 400) {
-            String modelData = response.body();
-            return Json.fromJson(modelData, JPKGroupModel[].class);
-        }
-        else {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKGroupModel[].class);
     }
 
     /**
@@ -75,18 +65,7 @@ public class JPKGroupsAccessor extends JPKAbstractAccessor {
 
         HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, groupData, Client);
 
-        int statusCode = response.statusCode();
-
-        if (statusCode < 400) {
-            String modelData = response.body();
-            return Json.fromJson(modelData, JPKGroupModel.class);
-        }
-        else {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKGroupModel.class);
     }
 
     /**
@@ -100,18 +79,7 @@ public class JPKGroupsAccessor extends JPKAbstractAccessor {
 
         HttpResponse<String> response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
-        int statusCode = response.statusCode();
-
-        if (statusCode < 400) {
-            String modelData = response.body();
-            return Json.fromJson(modelData, JPKGroupModel.class);
-        }
-        else {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKGroupModel.class);
     }
 
     /**
@@ -127,18 +95,7 @@ public class JPKGroupsAccessor extends JPKAbstractAccessor {
 
         HttpResponse<String> response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, groupData, Client);
 
-        int statusCode = response.statusCode();
-
-        if (statusCode < 400) {
-            String modelData = response.body();
-            return Json.fromJson(modelData, JPKGroupModel.class);
-        }
-        else {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKGroupModel.class);
     }
 
     /**
@@ -150,14 +107,7 @@ public class JPKGroupsAccessor extends JPKAbstractAccessor {
         String path = "https://api.pluralkit.me/v2/groups/%s".formatted(groupReference);
         HttpResponse<String> response = JPK.Utils.DELETE(path, Parent.AuthorizationToken, Client);
 
-        int statusCode = response.statusCode();
-        if (statusCode >= 400) {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
-        return statusCode == 204;
+        return IsCode(response, 204);
     }
 
     /**
@@ -170,18 +120,7 @@ public class JPKGroupsAccessor extends JPKAbstractAccessor {
         String path = "https://api.pluralkit.me/v2/groups/%s/members".formatted(groupReference);
         HttpResponse<String> response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
-        int statusCode = response.statusCode();
-
-        if (statusCode < 400) {
-            String modelData = response.body();
-            return Json.fromJson(modelData, JPKMemberModel[].class);
-        }
-        else {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKMemberModel[].class);
     }
 
     /**
@@ -196,14 +135,7 @@ public class JPKGroupsAccessor extends JPKAbstractAccessor {
         String modelData = Json.toJson(memberIDs);
         HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData, Client);
 
-        int statusCode = response.statusCode();
-        if (statusCode >= 400) {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
-        return statusCode == 204;
+        return IsCode(response, 204);
     }
 
     /**
@@ -233,14 +165,7 @@ public class JPKGroupsAccessor extends JPKAbstractAccessor {
         String modelData = Json.toJson(memberIDs);
         HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData, Client);
 
-        int statusCode = response.statusCode();
-        if (statusCode >= 400) {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
-        return statusCode == 204;
+        return IsCode(response, 204);
     }
 
     /**
@@ -269,14 +194,7 @@ public class JPKGroupsAccessor extends JPKAbstractAccessor {
         String path = "https://api.pluralkit.me/v2/groups/%s/members/overwrite".formatted(groupReference);
         String modelData = Json.toJson(memberIDs);
         HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData, Client);
-        int statusCode = response.statusCode();
-        if (statusCode >= 400) {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
-        return statusCode == 204;
+        return IsCode(response, 204);
     }
 
     /**

@@ -39,21 +39,7 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
         //Sending request and getting response
         var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
-        int statusCode = response.statusCode();
-
-        //Checking, is error occurred
-        if (statusCode < 400) {
-            //If no, just returning system model
-            String modelData = response.body();
-            return Json.fromJson(modelData, JPKSystemModel.class);
-        }
-        else {
-            //If yes, just put json object of error in function and magic happens
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKSystemModel.class);
     }
 
     /**
@@ -81,19 +67,7 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
 
         var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
-        int statusCode = response.statusCode();
-
-        //Throwing exception if code is more or equals 400
-        if (statusCode < 400) {
-            String newModelData = response.body();
-            return Json.fromJson(newModelData, JPKSystemModel.class);
-        }
-        else {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKSystemModel.class);
     }
 
     /**
@@ -119,21 +93,7 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
         //Sending request and getting response
         var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
-        int statusCode = response.statusCode();
-
-        //Checking, is error occurred
-        if (statusCode < 400) {
-            //If no, just returning system settings model
-            String modelData = response.body();
-            return Json.fromJson(modelData, JPKSystemSettingsModel.class);
-        }
-        else {
-            //If yes, just put json object of error in function and magic happens
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKSystemSettingsModel.class);
     }
 
     /**
@@ -158,19 +118,7 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
         String path = "https://api.pluralkit.me/v2/systems/%s".formatted(systemReference);
         var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
-        int statusCode = response.statusCode();
-
-        //Throwing exception if code is more or equals 400
-        if (statusCode < 400) {
-            String newModelData = response.body();
-            return Json.fromJson(newModelData, JPKSystemSettingsModel.class);
-        }
-        else {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKSystemSettingsModel.class);
     }
     /**
      * Accessor for PATCH /systems/@me/settings.
@@ -197,21 +145,7 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
         //Sending request and getting response
         var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
-        int statusCode = response.statusCode();
-
-        //Checking, is error occurred
-        if (statusCode < 400) {
-            //If no, just returning system guild settings model
-            String modelData = response.body();
-            return Json.fromJson(modelData, JPKSystemGuildSettingsModel.class);
-        }
-        else {
-            //If yes, just put json object of error in function and magic happens
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKSystemGuildSettingsModel.class);
     }
 
     /**
@@ -241,19 +175,7 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
         String path = "https://api.pluralkit.me/v2/systems/%s/guilds/%s".formatted(systemReference, guildId);
         var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
-        int statusCode = response.statusCode();
-
-        //Throwing exception if code is more or equals 400
-        if (statusCode < 400) {
-            String newModelData = response.body();
-            return Json.fromJson(newModelData, JPKSystemGuildSettingsModel.class);
-        }
-        else {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKSystemGuildSettingsModel.class);
     }
 
     /**
@@ -284,19 +206,7 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
 
         int statusCode = response.statusCode();
 
-        //Checking, is error occurred
-        if (statusCode < 400) {
-            //If no, just returning system guild settings model
-            String modelData = response.body();
-            return Json.fromJson(modelData, JPKAutoproxySettingsModel.class);
-        }
-        else {
-            //If yes, just put json object of error in function and magic happens
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKAutoproxySettingsModel.class);
     }
 
     /**
@@ -326,19 +236,7 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
         String path = "https://api.pluralkit.me/v2/systems/%s/autoproxy?guild_id=%s".formatted(systemReference, guild_id);
         var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
-        int statusCode = response.statusCode();
-
-        //Throwing exception if code is more or equals 400
-        if (statusCode < 400) {
-            String newModelData = response.body();
-            return Json.fromJson(newModelData, JPKAutoproxySettingsModel.class);
-        }
-        else {
-            String errorData = response.body();
-            JsonObject jsonObject = Json.fromJson(errorData, JsonObject.class);
-            JPKAbstractException exception = JPKAbstractException.ExceptionFromJsonObject(jsonObject, statusCode);
-            throw exception;
-        }
+        return ConvertOrThrowError(response, JPKAutoproxySettingsModel.class);
     }
 
     /**
