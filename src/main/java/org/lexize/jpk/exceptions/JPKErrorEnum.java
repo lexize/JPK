@@ -1,0 +1,55 @@
+package org.lexize.jpk.exceptions;
+
+public enum JPKErrorEnum {
+    UNKNOWN (-1,-1),
+
+    INTERNAL_SERVER_ERROR(0, 500),
+    BAD_REQUEST(0, 400),
+    INVALID_AUTHORIZATION(0,401),
+
+    SYSTEM_NOT_FOUND(20001, 404),
+    MEMBER_NOT_FOUND(20002, 404),
+    MEMBER_REF_NOT_FOUND(20003, 404),
+    GROUP_NOT_FOUND(20004, 404),
+    GROUP_REF_NOT_FOUND(20005, 404),
+    MESSAGE_NOT_FOUND(20006, 404),
+    SWITCH_NOT_FOUND(20007, 404),
+    SWITCH_CANNOT_BE_ACCESSED(20008, 404),
+    MEMBER_GUILD_SETTINGS_NOT_FOUND(20009, 404),
+    SYSTEM_GUILD_SETTINGS_NOT_FOUND(20010, 404),
+
+    MEMBER_LIST_VIEW_UNAUTHORIZED(30001, 403),
+    GROUP_LIST_VIEW_UNAUTHORIZED(30002, 403),
+    GROUP_MEMBER_LIST_VIEW_UNAUTHORIZED(30003,403),
+    CURRENT_FRONTIER_VIEW_UNAUTHORIZED(30004,403),
+    FRONT_HISTORY_VIEW_UNAUTHORIZED(30005, 403),
+    MEMBER_IS_NOT_IN_YOUR_SYSTEM(30006, 403),
+    GROUP_IS_NOT_IN_YOUR_SYSTEM(30007, 403),
+    MEMBER_REF_IS_NOT_IN_YOUR_SYSTEM(30008, 403),
+    GROUP_REF_IS_NOT_IN_YOUR_SYSTEM(30009, 403),
+
+    MISSING_AUTOPROXY_MEMBER(40002, 400),
+    DUPLICATE_MEMBERS_IN_LIST(40003, 400),
+    MEMBER_LIST_IS_IDENTICAL(40004, 400),
+    SWITCH_ALREADY_EXISTS(40005, 400),
+    INVALID_SWITCH_ID(40005, 400)
+    ;
+
+
+
+    public final int ErrorCode;
+    public final int HttpCode;
+
+    JPKErrorEnum(int errorCode, int httpCode) {
+        ErrorCode = errorCode;
+        HttpCode = httpCode;
+    }
+
+    public static JPKErrorEnum ErrorTypeFromCodes(int errorCode, int httpCode) {
+        for (JPKErrorEnum v:
+             JPKErrorEnum.values()) {
+            if (v.HttpCode == httpCode & v.ErrorCode == errorCode) return v;
+        }
+        return UNKNOWN;
+    }
+}

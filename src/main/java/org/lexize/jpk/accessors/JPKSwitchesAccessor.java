@@ -12,4 +12,8 @@ public class JPKSwitchesAccessor extends JPKAbstractAccessor {
     public JPKSwitchesAccessor(JPK parent) {
         super(parent);
     }
+
+    //public JPKSwitchModel GetSystemSwitches(String systemReference) {
+    //    String path = AccessURL + "systems/%s/switches".formatted(systemReference);
+    //}
 }

@@ -1,26 +1,17 @@
 package org.lexize.jpk.accessors;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import org.lexize.jpk.JPK;
-import org.lexize.jpk.exceptions.JPKAbstractException;
-import org.lexize.jpk.exceptions.JPKSystemNotFoundException;
+import org.lexize.jpk.exceptions.JPKException;
 import org.lexize.jpk.models.JPKGroupModel;
 import org.lexize.jpk.models.JPKMemberGuildSettingsModel;
 import org.lexize.jpk.models.JPKMemberModel;
-import org.lexize.jpk.models.JPKSystemModel;
 
-import java.lang.reflect.Type;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class JPKMembersAccessor extends JPKAbstractAccessor {
-
+    // AccessURL + "
 
     /**
      * Default constructor of accessor
@@ -35,10 +26,10 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
      * Retrieves system members list
      * @param systemReference ID of system
      * @return List of JPKMemberModel
-     * @throws JPKSystemNotFoundException
+     * @throws JPKException
      */
     public JPKMemberModel[] GetSystemMembers(String systemReference) throws Exception {
-        String path = "https://api.pluralkit.me/v2/systems/%s".formatted(systemReference);
+        String path = AccessURL + "systems/%s".formatted(systemReference);
 
         //Sending request and getting response
         var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
@@ -49,7 +40,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
     /**
      * Retrieves current system members list
      * @return List of JPKMemberModel
-     * @throws JPKSystemNotFoundException
+     * @throws JPKException
      */
     public JPKMemberModel[] GetSystemMembers() throws Exception {
         return GetSystemMembers("@me");
@@ -62,7 +53,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
      * @throws Exception
      */
     public JPKMemberModel GetMember(String memberReference) throws Exception {
-        String path = "https://api.pluralkit.me/v2/members/%s".formatted(memberReference);
+        String path = AccessURL + "members/%s".formatted(memberReference);
 
         HttpResponse<String> response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
@@ -77,7 +68,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
      */
     public JPKMemberModel CreateMember(JPKMemberModel model) throws Exception {
         String modelData_ = Json.toJson(model);
-        String path = "https://api.pluralkit.me/v2/members/";
+        String path = AccessURL + "members/";
         HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData_, Client);
 
         return ConvertOrThrowError(response, JPKMemberModel.class);
@@ -94,7 +85,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
         //Converting model to JSON
         String modelData = Json.toJson(model);
 
-        String path = "https://api.pluralkit.me/v2/members/%s".formatted(memberReference);
+        String path = AccessURL + "members/%s".formatted(memberReference);
 
         var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
@@ -108,7 +99,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
      * @throws Exception
      */
     public boolean DeleteMember(String memberReference) throws Exception {
-        String path = "https://api.pluralkit.me/v2/members/%s".formatted(memberReference);
+        String path = AccessURL + "members/%s".formatted(memberReference);
         HttpResponse<String> response = JPK.Utils.DELETE(path, Parent.AuthorizationToken, Client);
         return IsCode(response, 204);
     }
@@ -124,7 +115,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
                 .newBuilder()
                 .GET()
                 .header("Authorization", Parent.AuthorizationToken);
-        String path = "https://api.pluralkit.me/v2/members/%s/groups".formatted(memberReference);
+        String path = AccessURL + "members/%s/groups".formatted(memberReference);
         requestBuilder.uri(URI.create(path));
 
         HttpResponse<String> response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
@@ -140,7 +131,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
      * @throws Exception
      */
     public boolean AddMemberToGroups(String memberReference, String... groups) throws Exception {
-        String path = "https://api.pluralkit.me/v2/members/%s/groups/add".formatted(memberReference);
+        String path = AccessURL + "members/%s/groups/add".formatted(memberReference);
         String modelData = Json.toJson(groups);
         HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData, Client);
 
@@ -170,7 +161,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
      * @throws Exception
      */
     public boolean RemoveMemberFromGroups(String memberReference, String... groups) throws Exception {
-        String path = "https://api.pluralkit.me/v2/members/%s/groups/remove".formatted(memberReference);
+        String path = AccessURL + "members/%s/groups/remove".formatted(memberReference);
         String modelData = Json.toJson(groups);
         HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData, Client);
 
@@ -200,7 +191,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
      * @throws Exception
      */
     public boolean OverwriteMemberGroups(String memberReference, String... groups) throws Exception {
-        String path = "https://api.pluralkit.me/v2/members/%s/groups/overwrite".formatted(memberReference);
+        String path = AccessURL + "members/%s/groups/overwrite".formatted(memberReference);
         String modelData = Json.toJson(groups);
         HttpResponse<String> response = JPK.Utils.POST(path, Parent.AuthorizationToken, modelData, Client);
         return IsCode(response, 204);
@@ -229,7 +220,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
      * @throws Exception
      */
     public JPKMemberGuildSettingsModel GetMemberGuildSettings(String memberReference, String guildReference) throws Exception {
-        String path = "https://api.pluralkit.me/v2/members/%s/guilds/%s".formatted(memberReference, guildReference);
+        String path = AccessURL + "members/%s/guilds/%s".formatted(memberReference, guildReference);
         HttpResponse<String> response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
 
         return ConvertOrThrowError(response, JPKMemberGuildSettingsModel.class);
@@ -247,7 +238,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
         //Converting model to JSON
         String modelData = Json.toJson(model);
 
-        String path = "https://api.pluralkit.me/v2/members/%s/guilds/%s".formatted(memberReference, guildReference);
+        String path = AccessURL + "members/%s/guilds/%s".formatted(memberReference, guildReference);
         var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
         return ConvertOrThrowError(response, JPKMemberGuildSettingsModel.class);

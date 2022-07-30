@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.lexize.jpk.accessors.JPKMembersAccessor;
 import org.lexize.jpk.accessors.JPKSystemsAccessor;
-import org.lexize.jpk.exceptions.JPKAbstractException;
+import org.lexize.jpk.exceptions.JPKException;
 import org.lexize.jpk.models.JPKSwitchModel;
 import org.lexize.jpk.serializers.*;
 
@@ -20,6 +20,13 @@ public class JPK {
     public String AuthorizationToken;
     private HttpClient Client;
     private Gson Json;
+
+    private String _accessUrl;
+
+    public String getAccessUrl() {
+        return _accessUrl;
+    }
+
     private JPKSystemsAccessor SystemsAccessor;
     private JPKMembersAccessor MembersAccessor;
 
@@ -60,12 +67,17 @@ public class JPK {
      * @param token
      */
     public JPK(String token) {
+        this(token, "https://api.pluralkit.me/v2/");
+    }
+
+    public JPK(String token, String accessUrl) {
         AuthorizationToken = token;
         Client = HttpClient.newBuilder().build();
         Json = new GsonBuilder()
                 .registerTypeAdapter(JPKSwitchModel.class, new JPKSwitchSerializer())
                 .registerTypeAdapter(JPKSwitchModel.class, new JPKSwitchDeserializer()).create();
-        JPKAbstractException.SetJsonInstance(Json);
+        JPKException.SetJsonInstance(Json);
+        _accessUrl = accessUrl;
         SystemsAccessor = new JPKSystemsAccessor(this);
         MembersAccessor = new JPKMembersAccessor(this);
     }
