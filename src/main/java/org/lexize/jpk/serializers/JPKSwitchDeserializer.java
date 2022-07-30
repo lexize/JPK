@@ -6,6 +6,7 @@ import org.lexize.jpk.models.JPKMemberModel;
 import org.lexize.jpk.models.JPKSwitchModel;
 
 import java.lang.reflect.Type;
+import java.time.Instant;
 
 public class JPKSwitchDeserializer implements JsonDeserializer<JPKSwitchModel> {
     @Override
@@ -18,7 +19,7 @@ public class JPKSwitchDeserializer implements JsonDeserializer<JPKSwitchModel> {
 
         //Setting fields that always has same type
         model.Id = obj.get("id").getAsString();
-        model.Timestamp = obj.get("timestamp").getAsString();
+        model.Timestamp = Instant.parse(obj.get("timestamp").getAsString());
 
         //Preparing variable that determines, is switch model using list of ids, or member models
         boolean isUsingIDs = false;

@@ -2,6 +2,8 @@ package org.lexize.jpk.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.time.Instant;
+
 public class JPKMemberModel {
     @SerializedName("id")
     public String Id;
@@ -24,7 +26,7 @@ public class JPKMemberModel {
     @SerializedName("description")
     public String Description;
     @SerializedName("created")
-    public String CreatedAt;
+    public Instant CreatedAt;
     @SerializedName("proxy_tags")
     public ProxyTagModel[] ProxyTags;
     @SerializedName("keep_proxy")

@@ -14,6 +14,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 
 public class JPK {
 
@@ -75,7 +76,10 @@ public class JPK {
         Client = HttpClient.newBuilder().build();
         Json = new GsonBuilder()
                 .registerTypeAdapter(JPKSwitchModel.class, new JPKSwitchSerializer())
-                .registerTypeAdapter(JPKSwitchModel.class, new JPKSwitchDeserializer()).create();
+                .registerTypeAdapter(JPKSwitchModel.class, new JPKSwitchDeserializer())
+                .registerTypeAdapter(Instant.class, new JPKTimeStampSerializer())
+                .registerTypeAdapter(Instant.class, new JPKTimeStampDeserializer())
+                .create();
         JPKException.SetJsonInstance(Json);
         _accessUrl = accessUrl;
         SystemsAccessor = new JPKSystemsAccessor(this);

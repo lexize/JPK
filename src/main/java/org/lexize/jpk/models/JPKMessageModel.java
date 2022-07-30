@@ -2,9 +2,11 @@ package org.lexize.jpk.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.time.Instant;
+
 public class JPKMessageModel {
     @SerializedName("timestamp")
-    public String Timestamp;
+    public Instant Timestamp;
     @SerializedName("id")
     public String Id;
     @SerializedName("original")

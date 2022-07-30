@@ -13,7 +13,7 @@ public class JPKSwitchSerializer implements JsonSerializer<JPKSwitchModel> {
         JsonObject obj = new JsonObject();
         //Adding default switch fields
         obj.addProperty("id", jpkSwitchModel.Id);
-        obj.addProperty("timestamp", jpkSwitchModel.Timestamp);
+        obj.addProperty("timestamp", jpkSwitchModel.Timestamp.toString());
 
         //Preparing JsonObject for members field
         JsonArray membersArray = new JsonArray();

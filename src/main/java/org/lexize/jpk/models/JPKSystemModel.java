@@ -2,6 +2,8 @@ package org.lexize.jpk.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.time.Instant;
+
 public class JPKSystemModel {
     @SerializedName("id")
     public String Id;
@@ -20,7 +22,7 @@ public class JPKSystemModel {
     @SerializedName("color")
     public String Color;
     @SerializedName("created")
-    public String CreatedAt;
+    public Instant CreatedAt;
     @SerializedName("privacy")
     public PrivacyModel Privacy;
 
