@@ -1,7 +1,9 @@
-package org.lexize.jpk.exceptions;
+package org.lexize.jpk.enums;
 
 public enum JPKErrorEnum {
     UNKNOWN (-1,-1),
+
+    RATE_LIMIT(0, 429),
 
     INTERNAL_SERVER_ERROR(0, 500),
     BAD_REQUEST(0, 400),

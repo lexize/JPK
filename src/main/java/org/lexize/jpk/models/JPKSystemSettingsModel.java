@@ -5,8 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public class JPKSystemSettingsModel {
     @SerializedName("timezone")
     public String Timezone;
+    @SerializedName("pings_enabled")
+    public boolean PingsEnabled;
     @SerializedName("latch_timeout")
-    public int LatchTimeout;
+    public Integer LatchTimeout;
     @SerializedName("member_default_private")
     public boolean MemberDefaultPrivate;
     @SerializedName("group_default_private")

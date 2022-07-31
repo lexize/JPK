@@ -2,8 +2,7 @@ package org.lexize.jpk;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.lexize.jpk.accessors.JPKMembersAccessor;
-import org.lexize.jpk.accessors.JPKSystemsAccessor;
+import org.lexize.jpk.accessors.*;
 import org.lexize.jpk.exceptions.JPKException;
 import org.lexize.jpk.models.JPKSwitchModel;
 import org.lexize.jpk.serializers.*;
@@ -30,6 +29,9 @@ public class JPK {
 
     private JPKSystemsAccessor SystemsAccessor;
     private JPKMembersAccessor MembersAccessor;
+    private JPKGroupsAccessor GroupsAccessor;
+    private JPKSwitchesAccessor SwitchesAccessor;
+    private JPKMiscAccessor MiscAccessor;
 
     /**
      * Retrieves HTTP client, used by JPK
@@ -64,6 +66,30 @@ public class JPK {
     }
 
     /**
+     * Retrieves accessor for groups models
+     * @return Groups Accessor
+     */
+    public JPKGroupsAccessor getGroupsAccessor() {
+        return GroupsAccessor;
+    }
+
+    /**
+     * Retrieves accessor for switches models
+     * @return Switches Accessor
+     */
+    public JPKSwitchesAccessor getSwitchesAccessor() {
+        return SwitchesAccessor;
+    }
+
+    /**
+     * Retrieves accessor for misc
+     * @return Misc Accessor
+     */
+    public JPKMiscAccessor getMiscAccessor() {
+        return MiscAccessor;
+    }
+
+    /**
      * Constructor of JPK
      * @param token
      */
@@ -79,11 +105,15 @@ public class JPK {
                 .registerTypeAdapter(JPKSwitchModel.class, new JPKSwitchDeserializer())
                 .registerTypeAdapter(Instant.class, new JPKTimeStampSerializer())
                 .registerTypeAdapter(Instant.class, new JPKTimeStampDeserializer())
+                .serializeNulls()
                 .create();
         JPKException.SetJsonInstance(Json);
         _accessUrl = accessUrl;
         SystemsAccessor = new JPKSystemsAccessor(this);
         MembersAccessor = new JPKMembersAccessor(this);
+        GroupsAccessor = new JPKGroupsAccessor(this);
+        SwitchesAccessor = new JPKSwitchesAccessor(this);
+        MiscAccessor = new JPKMiscAccessor(this);
     }
 
     public static class Utils {

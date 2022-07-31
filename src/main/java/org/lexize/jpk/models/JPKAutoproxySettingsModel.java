@@ -7,7 +7,7 @@ import java.time.Instant;
 
 public class JPKAutoproxySettingsModel {
     @SerializedName("autoproxy_mode")
-    public String AutoproxyMode;
+    public JPKAutoproxyModeEnum AutoproxyMode;
     @SerializedName("autoproxy_member")
     public String AutoproxyMember;
     @SerializedName("last_latch_timestamp")

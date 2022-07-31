@@ -103,7 +103,7 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
         //Converting model to JSON
         String modelData = Json.toJson(model);
 
-        String path = AccessURL + "systems/%s".formatted(systemReference);
+        String path = AccessURL + "systems/%s/settings".formatted(systemReference);
         var response = JPK.Utils.PATCH(path, Parent.AuthorizationToken, modelData, Client);
 
         return ConvertOrThrowError(response, JPKSystemSettingsModel.class);
@@ -131,7 +131,6 @@ public class JPKSystemsAccessor extends JPKAbstractAccessor {
 
         //Sending request and getting response
         var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);
-
         return ConvertOrThrowError(response, JPKSystemGuildSettingsModel.class);
     }
 

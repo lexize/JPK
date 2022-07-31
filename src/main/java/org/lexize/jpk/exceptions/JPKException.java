@@ -2,6 +2,7 @@ package org.lexize.jpk.exceptions;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.lexize.jpk.enums.JPKErrorEnum;
 import org.lexize.jpk.models.JPKErrorModel;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class JPKException extends Exception{
 
     @Override
     public String getMessage() {
-        return this.Message;
+        return "(%s)[%s]{%s} %s".formatted(ErrorCode, HttpCode, ErrorType, Message);
     }
 
     private static Gson Json;
@@ -35,7 +36,6 @@ public class JPKException extends Exception{
     }
 
     public static JPKException ExceptionFromJsonObject(JsonObject jsonObject, int httpCode) {
-        System.out.println(Json.toJson(jsonObject));
         var codeElem = jsonObject.get("code");
         boolean isPKError = codeElem != null;
         HashMap<String, JPKErrorModel> Errors = null;
