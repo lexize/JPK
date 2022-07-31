@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        JPK jpk = new JPK("DFc1anLrDvjahcnqJMxgo9vSbmGK27PKrDa8513G8KJnsCIFDzccMaMZOH4oLj5D");
+        JPK jpk = new JPK("");
         //             No token?
         //⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝
         //⠸⡸⠜⠕⠕⠁⢁⢇⢏⢽⢺⣪⡳⡝⣎⣏⢯⢞⡿⣟⣷⣳⢯⡷⣽⢽⢯⣳⣫⠇
