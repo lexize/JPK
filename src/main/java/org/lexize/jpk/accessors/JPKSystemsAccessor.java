@@ -1,9 +1,11 @@
 package org.lexize.jpk.accessors;
 
 import org.lexize.jpk.JPK;
+import org.lexize.jpk.docs.annotations.JDocsInclude;
 import org.lexize.jpk.exceptions.JPKException;
 import org.lexize.jpk.models.*;
 
+@JDocsInclude
 public class JPKSystemsAccessor extends JPKAbstractAccessor {
 
 

@@ -1,6 +1,7 @@
 package org.lexize.jpk.accessors;
 
 import org.lexize.jpk.JPK;
+import org.lexize.jpk.docs.annotations.JDocsInclude;
 import org.lexize.jpk.models.JPKMemberModel;
 import org.lexize.jpk.models.JPKSwitchModel;
 
@@ -9,6 +10,8 @@ import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
 import org.lexize.jpk.exceptions.JPKException;
+
+@JDocsInclude
 public class JPKSwitchesAccessor extends JPKAbstractAccessor {
     /**
      * Default constructor of accessor

@@ -26,7 +26,7 @@ public abstract class JPKAbstractAccessor {
         Json = Parent.getJson();
     }
 
-    public <T> T ConvertOrThrowError(HttpResponse<String> response, Class<T> type) throws JPKException {
+    protected <T> T ConvertOrThrowError(HttpResponse<String> response, Class<T> type) throws JPKException {
         int statusCode = response.statusCode();
 
         //Checking, is error occurred
@@ -44,7 +44,7 @@ public abstract class JPKAbstractAccessor {
         }
     }
 
-    public boolean IsCode(HttpResponse<String> response, int code) throws JPKException {
+    protected boolean IsCode(HttpResponse<String> response, int code) throws JPKException {
         int statusCode = response.statusCode();
         if (statusCode >= 400) {
             String errorData = response.body();

@@ -1,10 +1,12 @@
 package org.lexize.jpk.accessors;
 
 import org.lexize.jpk.JPK;
+import org.lexize.jpk.docs.annotations.JDocsInclude;
 import org.lexize.jpk.models.JPKMessageModel;
 
 import java.net.http.HttpResponse;
 
+@JDocsInclude
 public class JPKMiscAccessor extends JPKAbstractAccessor{
     /**
      * Default constructor of accessor

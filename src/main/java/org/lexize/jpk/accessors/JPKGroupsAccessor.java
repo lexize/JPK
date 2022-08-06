@@ -1,11 +1,13 @@
 package org.lexize.jpk.accessors;
 
 import org.lexize.jpk.JPK;
+import org.lexize.jpk.docs.annotations.JDocsInclude;
 import org.lexize.jpk.models.JPKGroupModel;
 import org.lexize.jpk.models.JPKMemberModel;
 
 import java.net.http.HttpResponse;
 
+@JDocsInclude
 public class JPKGroupsAccessor extends JPKAbstractAccessor {
 
     /**

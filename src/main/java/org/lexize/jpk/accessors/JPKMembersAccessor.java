@@ -1,6 +1,7 @@
 package org.lexize.jpk.accessors;
 
 import org.lexize.jpk.JPK;
+import org.lexize.jpk.docs.annotations.JDocsInclude;
 import org.lexize.jpk.exceptions.JPKException;
 import org.lexize.jpk.models.JPKGroupModel;
 import org.lexize.jpk.models.JPKMemberGuildSettingsModel;
@@ -10,6 +11,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+@JDocsInclude
 public class JPKMembersAccessor extends JPKAbstractAccessor {
     // AccessURL + "
 
@@ -29,7 +31,7 @@ public class JPKMembersAccessor extends JPKAbstractAccessor {
      * @throws JPKException
      */
     public JPKMemberModel[] GetSystemMembers(String systemReference) throws Exception {
-        String path = AccessURL + "systems/%s".formatted(systemReference);
+        String path = AccessURL + "systems/%s/members".formatted(systemReference);
 
         //Sending request and getting response
         var response = JPK.Utils.GET(path, Parent.AuthorizationToken, Client);

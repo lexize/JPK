@@ -10,4 +10,12 @@
       </profile>
     </annotationProcessing>
   </component>
+  <component name="EclipseCompilerSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="JPK" options="" />
+    </option>
+  </component>
 </project>

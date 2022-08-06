@@ -3,6 +3,10 @@ package org.lexize.jpk;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.lexize.jpk.accessors.*;
+import org.lexize.jpk.docs.JDocs;
+import org.lexize.jpk.docs.annotations.JDocsDescription;
+import org.lexize.jpk.docs.annotations.JDocsDescriptions;
+import org.lexize.jpk.docs.annotations.JDocsInclude;
 import org.lexize.jpk.exceptions.JPKException;
 import org.lexize.jpk.models.JPKSwitchModel;
 import org.lexize.jpk.serializers.*;
@@ -14,7 +18,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
 
+@JDocsDescription("Test description")
+@JDocsInclude(true)
 public class JPK {
 
     public String AuthorizationToken;
@@ -85,8 +93,13 @@ public class JPK {
      * Retrieves accessor for misc
      * @return Misc Accessor
      */
+    @JDocsDescription("Test description")
     public JPKMiscAccessor getMiscAccessor() {
         return MiscAccessor;
+    }
+
+    public <T,K,V> void TestMethod(HashMap<String,V> listOfT) {
+
     }
 
     /**
@@ -144,5 +157,15 @@ public class JPK {
             return client.send(builder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         }
 
+    }
+
+    public static void main(String[] args) {
+        switch (args[0]) {
+            case ("--gen-docs") -> {
+                Gson json = new GsonBuilder().setPrettyPrinting().create();
+                JDocs docs = JDocs.GenerateTreeFromRoots(JPK.class);
+                System.out.println(json.toJson(docs));
+            }
+        }
     }
 }
